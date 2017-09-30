@@ -1,0 +1,54 @@
+﻿@model IPagedList<Callans_site.Models.Callans_Suppliers_Model>
+@using PagedList;
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Meet the team";
+}
+
+<STYLE type="text/css">
+    td{
+        padding: 15px;
+    }
+   .ContactName {
+        width: 130px;
+        padding-left: 5px;
+    }
+
+</STYLE>
+
+<h2>Our Team:</h2>
+
+<div>
+    <table>
+        @foreach (Callans_site.Models.Callans_Suppliers_Model sm in Model.ToList<Callans_site.Models.Callans_Suppliers_Model>()) {
+            <tr>
+                <td valign="top"><p>@sm.ContactName is the @sm.ContactTitle at @sm.CompanyName</p></td>
+                <td>
+                    <address>
+                        Address:<br />
+                        @sm.Address,<br />
+                        @sm.PostalCode,<br />
+                        @sm.City,<br />
+                        @if (!sm.Region.IsEmpty()) {
+                            <div>@sm.Region,<br/></div>
+                         }
+                        @sm.Country<br />
+                    </address>
+                </td>
+                <td>
+                    <address>
+                        Contact numbers:<br />
+                        Phone: @sm.Phone<br />
+                        Fax: @sm.Fax
+                    </address>
+                </td>
+            </tr>
+        }
+    </table>
+    @Html.PagedListPager(Model, page => Url.Action("SuppliersView",
+    new { page}))
+</div>
+
+<hr />
+

@@ -1,0 +1,195 @@
+﻿@model IEnumerable<Callans_site.Models.Callans_Products_Model>
+
+@{
+    ViewBag.Title = "Caegory View";
+    var grid = new WebGrid(null,
+        defaultSort: ViewBag.sortCol,
+        sortFieldName: "sortCol",
+        sortDirectionFieldName: "sortDir",
+        rowsPerPage: ViewBag.rowsPerPage);
+    grid.Bind(Model, rowCount: ViewBag.count, autoSortAndPage: false);
+}
+
+@functions {
+    public static string Sorter(string columnName, string columnHeader, WebGrid grid) {
+        return string.Format("{0} {1}", columnHeader,
+            grid.SortColumn.ToUpper() == columnName.ToUpper() ? grid.SortDirection == SortDirection.Ascending ? "▲" : "▼" : string.Empty);
+    }    
+}
+<STYLE type="text/css">
+    .ProductID {
+        width: 85px;
+        padding-right: 5px;
+    }
+
+    .ProductName {
+        width: 140px;
+        padding-left: 5px;
+    }
+
+    .UnitPrice {
+        width: 90px;
+        padding-right: 5px;
+    }
+
+    .UnitsInStock {
+        width: 100px;
+        padding-right: 5px;
+    }
+
+    .UnitsOnOrder {
+        width: 100px;
+        padding-right: 5px;
+    }
+
+    .CategoryName {
+        width: 125px;
+        padding-left: 5px;
+    }
+
+    .CompanyName {
+        width: 150px;
+        padding-left: 5px;
+    }
+
+    .ContactName {
+        width: 120px;
+        padding-left: 5px;
+    }
+
+    .Description {
+        width: 130px;
+        padding-left: 5px;
+    }
+
+    .CompanyName {
+        width: 130px;
+        padding-left: 5px;
+    }
+
+    .ContactName {
+        width: 130px;
+        padding-left: 5px;
+    }
+
+    .Country {
+        width: 100px;
+        padding-left: 5px;
+    }
+
+    .dropbtn {
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ffffff), color-stop(1, #f6f6f6));
+        background: -moz-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+        background: -webkit-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+        background: -o-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+        background: -ms-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+        background: linear-gradient(to bottom, #ffffff 5%, #f6f6f6 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f6f6f6',GradientType=0);
+        background-color: #ffffff;
+        -moz-border-radius: 6px;
+        -webkit-border-radius: 6px;
+        border-radius: 6px;
+        border: 1px solid #dcdcdc;
+        display: inline-block;
+        cursor: pointer;
+        color: #666666;
+        font-family: Arial;
+        font-size: 15px;
+        font-weight: bold;
+        padding: 6px 24px;
+        text-decoration: none;
+    }
+
+        .dropbtn:hover, .dropbtn:focus {
+            background-color: #3e8e41;
+        }
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        overflow: auto;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+    }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+    .dropdown a:hover {
+        background-color: #f1f1f1
+    }
+
+    .show {
+        display: block;
+    }
+
+</STYLE>
+
+<h2>Products by category</h2>
+<h3>Select a category</h3>
+<div class="dropdown">
+    <button onclick="getCategoryList()" class="dropbtn">Categories</button>
+    <div id="CategoriesDropdown" class="dropdown-content">
+        @foreach(var category in ViewBag.categories) {
+            <a href="/Sql/CategoryView?categoryName=@category">@category</a>
+        }
+    </div>
+</div>
+
+
+<script>
+    function getCategoryList() {
+        document.getElementById("CategoriesDropdown").classList.toggle("show");
+    }
+
+    window.onclick = function (event) {
+        if (!event.target.matches('.dropbtn')) {
+
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            var i;
+            for (i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    }
+</script>
+
+<div>
+    @grid.GetHtml(
+        tableStyle: "table-bordered",
+        columns: grid.Columns(
+            grid.Column(header: Sorter("ProductID", "Product ID", grid), columnName: "ProductID", style: "ProductID text-right"),
+            grid.Column(header: Sorter("ProductName", "Product Name", grid), columnName: "ProductName", style: "ProductName"),
+            grid.Column(header: Sorter("UnitPrice", "Unit Price", grid), columnName: "UnitPrice", format: (item) => string.Format($"{item.UnitPrice:c2}"), style: "UnitPrice text-right"),
+            grid.Column(header: Sorter("UnitsInStock", "Units In Stock", grid), columnName: "UnitsInStock", style: "UnitsInStock text-right"),
+            grid.Column(header: Sorter("UnitsOnOrder", "Units On Order", grid), columnName: "UnitsOnOrder", style: "UnitsOnOrder text-right"),
+            //grid.Column(header: Sorter("CategoryName", "Category Name", grid), columnName: "CategoryName", style: "CategoryName"),
+            //grid.Column(header: Sorter("Description", "Description", grid), columnName: "Description", style: "Description"),
+            grid.Column(header: Sorter("CompanyName", "Company Name", grid), columnName: "CompanyName", style: "CompanyName"),
+            grid.Column(header: Sorter("ContactName", "Contact Name", grid), columnName: "ContactName", style: "ContactName"),
+            grid.Column(header: Sorter("Country", "Country", grid), columnName: "Country", style: "Country")
+        ),
+        mode: WebGridPagerModes.All,
+        numericLinksCount: 10
+    )
+
+    <div>
+        <h3>Ordering by:</h3>
+        <b>@grid.SortColumn</b> @grid.SortDirection
+    </div>
+</div>
+

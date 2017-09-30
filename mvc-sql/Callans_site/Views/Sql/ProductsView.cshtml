@@ -1,0 +1,119 @@
+﻿@model IEnumerable<Callans_site.Models.Callans_Products_Model>
+
+@{
+    ViewBag.Title = "ProductsView";
+    var grid = new WebGrid(null,
+        defaultSort: ViewBag.sortCol,
+        sortFieldName: "sortCol",
+        sortDirectionFieldName: "sortDir",
+        rowsPerPage: ViewBag.rowsPerPage);
+    grid.Bind(Model, rowCount: ViewBag.count, autoSortAndPage: false);
+}
+
+@functions {
+    public static string Sorter(string columnName, string columnHeader, WebGrid grid) {
+        return string.Format("{0} {1}", columnHeader,
+            grid.SortColumn.ToUpper() == columnName.ToUpper() ? grid.SortDirection == SortDirection.Ascending ? "▲" : "▼" : string.Empty);
+    }
+}
+
+<STYLE type="text/css">
+    .ProductID {
+        width: 85px;
+        padding-right: 5px;
+    }
+
+    .ProductName {
+        width: 140px;
+        padding-left: 5px;
+    }
+
+    .UnitPrice {
+        width: 90px;
+        padding-right: 5px;
+    }
+
+    .UnitsInStock {
+        width: 100px;
+        padding-right: 5px;
+    }
+
+    .UnitsOnOrder {
+        width: 100px;
+        padding-right: 5px;
+    }
+
+    .CategoryName {
+        width: 125px;
+        padding-left: 5px;
+    }
+
+    .CompanyName {
+        width: 150px;
+        padding-left: 5px;
+    }
+
+    .ContactName {
+        width: 120px;
+        padding-left: 5px;
+    }
+
+    .Description {
+        width: 130px;
+        padding-left: 5px;
+    }
+
+    .CompanyName {
+        width: 130px;
+        padding-left: 5px;
+    }
+
+    .ContactName {
+        width: 130px;
+        padding-left: 5px;
+    }
+
+    .Country {
+        width: 100px;
+        padding-left: 5px;
+    }
+</STYLE>
+@{
+    ViewBag.Title = "ProductView";
+}
+
+<h2>Products</h2>
+
+<div>
+    @grid.GetHtml(
+        tableStyle: "table-bordered",
+        columns: grid.Columns(
+            grid.Column(header: Sorter("ProductID", "Product ID", grid), columnName: "ProductID", style: "ProductID text-right"),
+            grid.Column(header: Sorter("ProductName", "Product Name", grid), columnName: "ProductName", style: "ProductName"),
+            grid.Column(header: Sorter("UnitPrice", "Unit Price", grid), columnName: "UnitPrice", format: (item) => string.Format($"{item.UnitPrice:c2}"), style: "UnitPrice text-right"),
+            grid.Column(header: Sorter("UnitsInStock", "Units In Stock", grid), columnName: "UnitsInStock", style: "UnitsInStock text-right"),
+            grid.Column(header: Sorter("UnitsOnOrder", "Units On Order", grid), columnName: "UnitsOnOrder", style: "UnitsOnOrder text-right"),
+            grid.Column(header: Sorter("CategoryName", "Category Name", grid), columnName: "CategoryName", style: "CategoryName"),
+            //grid.Column(header: Sorter("Description", "Description", grid), columnName: "Description", style: "Description"),
+            grid.Column(header: Sorter("CompanyName", "Company Name", grid), columnName: "CompanyName", style: "CompanyName"),
+            grid.Column(header: Sorter("ContactName", "Contact Name", grid), columnName: "ContactName", style: "ContactName"),
+            grid.Column(header: Sorter("Country", "Country", grid), columnName: "Country", style: "Country")
+        ),
+        mode: WebGridPagerModes.All,
+        numericLinksCount: 10
+    )
+
+    <div>
+        <h3>Ordering by:</h3>
+        <b>@grid.SortColumn</b> @grid.SortDirection
+    </div>
+</div>
+
+<hr />
+
+<div style="max-width: 100%;">
+    <h4>Request SQL:</h4>
+    <textarea readonly id="styled" rows="32" cols="160" style="max-width: 100%;">
+        @ViewBag.sql
+    </textarea>
+</div>
